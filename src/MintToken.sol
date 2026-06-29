@@ -4,10 +4,10 @@ pragma solidity ^0.8.20;
 import {ERC20} from "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-/// @title PortfolioToken
+/// @title MintToken
 /// @notice A capped ERC-20 with a paid public mint and an owner-only mint for airdrops.
 /// @dev Demonstrates: capped supply, payable mint, access control, and safe ETH withdrawal.
-contract PortfolioToken is ERC20, Ownable {
+contract MintToken is ERC20, Ownable {
     /// @notice Maximum number of tokens that can ever exist (18 decimals).
     uint256 public immutable maxSupply;
 

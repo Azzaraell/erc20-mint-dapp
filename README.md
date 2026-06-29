@@ -1,10 +1,17 @@
-# PortfolioToken — ERC-20 with Paid Public Mint
+# MintToken — ERC-20 with Paid Public Mint
 
-A production-style ERC-20 token built with **Foundry** and **OpenZeppelin**, featuring a paid public mint, a capped supply, owner airdrops, and safe proceeds withdrawal. Fully tested (unit + fuzz) and deployed to **Ethereum Sepolia**.
+A starter template for shipping a capped ERC-20 with a paid public mint. Built with
+**Foundry** and **OpenZeppelin v5**, tested (unit + fuzz), with a minimal React +
+wagmi/viem mint dApp. Clone it, change the name, cap, and price, deploy your own token.
 
-> Portfolio project demonstrating smart-contract development, testing, and deployment workflow.
+The contract covers the common paid-mint requirements out of the box: a hard supply
+cap, exact-payment public mint, owner-only mint for airdrops, an adjustable price, and
+checked proceeds withdrawal. Adapt the parameters; the mint logic stays the same.
 
-## 🟢 Live Deployment
+## 🟢 Demo Deployment
+
+A live instance on Sepolia so you can try the dApp before deploying your own. This is the
+template author's demo, not your token — deploy your own and point the frontend at it.
 
 | | |
 |---|---|
@@ -33,10 +40,10 @@ A production-style ERC-20 token built with **Foundry** and **OpenZeppelin**, fea
 ## Project Structure
 
 ```
-src/PortfolioToken.sol     # The token contract
-test/PortfolioToken.t.sol  # 17 tests (unit + fuzz)
-script/Deploy.s.sol        # Deployment script
-frontend/                  # React + wagmi/viem mint dApp
+src/MintToken.sol     # The token contract
+test/MintToken.t.sol  # 17 tests (unit + fuzz)
+script/Deploy.s.sol   # Deployment script
+frontend/             # React + wagmi/viem mint dApp
 ```
 
 ## Quick Start
@@ -57,6 +64,19 @@ forge test --gas-report
 # Coverage
 forge coverage
 ```
+
+## Customize
+
+This template ships with demo defaults. To make it your own:
+
+- **Token name / symbol / cap / price** — set in `script/Deploy.s.sol` (defaults `"Mint Token"`,
+  `"MINT"`, 1,000,000 cap, 0.001 ETH per token), or override per-deploy via the `TOKEN_*`
+  environment variables in `.env`. These are display/config values; changing them does not
+  touch the contract logic.
+- **Contract identifier** — the Solidity contract is `MintToken`. Rename it (and the file,
+  test, and deploy import) only if you want a different on-chain artifact name.
+- **Frontend contract address** — set `VITE_CONTRACT_ADDRESS` in `frontend/.env` to your
+  deployed address (see [Frontend dApp](#frontend-dapp)).
 
 ## Deployment (Ethereum Sepolia)
 
@@ -83,10 +103,12 @@ wallet (MetaMask), reads live token stats, and lets users mint by paying ETH.
 ```bash
 cd frontend
 npm install
-# After deploying, set the contract address:
-echo "VITE_CONTRACT_ADDRESS=0xYourDeployedAddress" > .env
+# Point the dApp at your deployed contract:
+cp .env.example .env   # then set VITE_CONTRACT_ADDRESS
 npm run dev
 ```
+
+If `VITE_CONTRACT_ADDRESS` is unset, the dApp falls back to the demo deployment on Sepolia.
 
 Stack: React 18, Vite, TypeScript, wagmi v2, viem v2, TanStack Query.
 
@@ -96,11 +118,11 @@ Stack: React 18, Vite, TypeScript, wagmi v2, viem v2, TanStack Query.
 - Supply cap checked before every `_mint`.
 - Withdrawal uses checked low-level call and reverts on failure.
 - `Ownable` guards all admin functions.
-- ⚠️ This is an educational/portfolio contract — not professionally audited. Do not use in production with real value without an audit.
+- ⚠️ This template is unaudited. Get an audit before deploying to mainnet with real value.
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE).
 
 ## Screenshots
 

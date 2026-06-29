@@ -24,7 +24,7 @@ export function App() {
   return (
     <main className="container">
       <header>
-        <h1>🪙 PortfolioToken Mint</h1>
+        <h1>🪙 MintToken</h1>
         <p className="sub">A demo ERC-20 paid mint on {CHAIN.name}</p>
       </header>
 

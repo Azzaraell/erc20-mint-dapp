@@ -2,11 +2,11 @@
 pragma solidity ^0.8.20;
 
 import {Test} from "forge-std/Test.sol";
-import {PortfolioToken} from "../src/PortfolioToken.sol";
+import {MintToken} from "../src/MintToken.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 
-contract PortfolioTokenTest is Test {
-    PortfolioToken internal token;
+contract MintTokenTest is Test {
+    MintToken internal token;
 
     address internal owner = makeAddr("owner");
     address internal alice = makeAddr("alice");
@@ -20,7 +20,7 @@ contract PortfolioTokenTest is Test {
     event ProceedsWithdrawn(address indexed to, uint256 amount);
 
     function setUp() public {
-        token = new PortfolioToken("Portfolio Token", "PORT", MAX_SUPPLY, MINT_PRICE, owner);
+        token = new MintToken("Mint Token", "MINT", MAX_SUPPLY, MINT_PRICE, owner);
     }
 
     /*//////////////////////////////////////////////////////////////
@@ -28,8 +28,8 @@ contract PortfolioTokenTest is Test {
     //////////////////////////////////////////////////////////////*/
 
     function test_Constructor_SetsMetadata() public view {
-        assertEq(token.name(), "Portfolio Token");
-        assertEq(token.symbol(), "PORT");
+        assertEq(token.name(), "Mint Token");
+        assertEq(token.symbol(), "MINT");
         assertEq(token.decimals(), 18);
         assertEq(token.maxSupply(), MAX_SUPPLY * 1e18);
         assertEq(token.mintPrice(), MINT_PRICE);
@@ -60,7 +60,7 @@ contract PortfolioTokenTest is Test {
     function test_PublicMint_RevertsOnZeroAmount() public {
         vm.deal(alice, 1 ether);
         vm.prank(alice);
-        vm.expectRevert(PortfolioToken.ZeroAmount.selector);
+        vm.expectRevert(MintToken.ZeroAmount.selector);
         token.publicMint{value: 0}(0);
     }
 
@@ -70,7 +70,7 @@ contract PortfolioTokenTest is Test {
         vm.deal(alice, cost);
         vm.prank(alice);
         vm.expectRevert(
-            abi.encodeWithSelector(PortfolioToken.IncorrectPayment.selector, cost - 1, cost)
+            abi.encodeWithSelector(MintToken.IncorrectPayment.selector, cost - 1, cost)
         );
         token.publicMint{value: cost - 1}(amount);
     }
@@ -81,7 +81,7 @@ contract PortfolioTokenTest is Test {
         vm.deal(alice, cost + 1);
         vm.prank(alice);
         vm.expectRevert(
-            abi.encodeWithSelector(PortfolioToken.IncorrectPayment.selector, cost + 1, cost)
+            abi.encodeWithSelector(MintToken.IncorrectPayment.selector, cost + 1, cost)
         );
         token.publicMint{value: cost + 1}(amount);
     }
@@ -93,7 +93,7 @@ contract PortfolioTokenTest is Test {
         vm.prank(alice);
         vm.expectRevert(
             abi.encodeWithSelector(
-                PortfolioToken.MaxSupplyExceeded.selector, amount * 1e18, MAX_SUPPLY * 1e18
+                MintToken.MaxSupplyExceeded.selector, amount * 1e18, MAX_SUPPLY * 1e18
             )
         );
         token.publicMint{value: cost}(amount);
@@ -128,7 +128,7 @@ contract PortfolioTokenTest is Test {
 
     function test_OwnerMint_RevertsOnZeroAmount() public {
         vm.prank(owner);
-        vm.expectRevert(PortfolioToken.ZeroAmount.selector);
+        vm.expectRevert(MintToken.ZeroAmount.selector);
         token.ownerMint(bob, 0);
     }
 
@@ -136,7 +136,7 @@ contract PortfolioTokenTest is Test {
         vm.prank(owner);
         vm.expectRevert(
             abi.encodeWithSelector(
-                PortfolioToken.MaxSupplyExceeded.selector,
+                MintToken.MaxSupplyExceeded.selector,
                 (MAX_SUPPLY + 1) * 1e18,
                 MAX_SUPPLY * 1e18
             )
@@ -194,7 +194,7 @@ contract PortfolioTokenTest is Test {
 
     function test_Withdraw_RevertsWhenNoProceeds() public {
         vm.prank(owner);
-        vm.expectRevert(PortfolioToken.NoProceeds.selector);
+        vm.expectRevert(MintToken.NoProceeds.selector);
         token.withdraw();
     }
 
